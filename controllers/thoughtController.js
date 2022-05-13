@@ -66,10 +66,30 @@ module.exports = {
         .then((thought) =>
             
             !thought
-                ? res.status(400).json({message: 'no thought with that id'})
-                : res.json('sick')    
+                ? res.status(400).json({message: 'No thought with that id'})
+                : res.json(thought)    
         )
         .catch((err) => res.status(500).json(err))
         
     },
+    deleteReaction(req,res) {
+        //console.log(reactionId)
+        Thoughts.findOneAndUpdate(
+            //console.log(thought),
+            {_id: req.params.thoughtId},
+            {$pull: {reactions: {reactionId: req.params.reactionId}}},
+            {runValidators: true, new: true}
+        )
+        .then((thought) =>
+            !thought
+                ? res.status(400).json({message: 'No thought with id'})
+                : res.json(thought)
+        )
+        .catch((err)=> res.status(500).json(err))    
+    }
 }
+
+//627ec9985f44c7c8b5311ad0 thoughtId
+
+//627edeb5c473e157a9e864f0 reactionId
+//627edeb5c473e157a9e864ef _id
