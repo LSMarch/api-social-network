@@ -1,5 +1,6 @@
-const {Schema, model, now} = require('mongoose')
-const { stringify } = require('querystring')
+const {Schema, model} = require('mongoose');
+const reactionSchema = require('./Reactions');
+//const { stringify } = require('querystring')
 
 const thoughtSchema = new Schema (
     {
@@ -17,11 +18,8 @@ const thoughtSchema = new Schema (
         //timestamps: true,
         //username: String,
         // double check this 
-        reactions: [
-            {
-                type: Schema.reactionSchema
-            }
-        ]
+        reactions: [reactionSchema]
+            
     }
 )
 

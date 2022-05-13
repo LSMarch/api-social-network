@@ -29,7 +29,7 @@ module.exports = {
     createUser(req,res) {
         Users.create(req.body)
             .then((dbUserData) => res.json(dbUserData))
-            .catch((err) => res.status(500).json(err))
+            .catch((err) => res.status(400).json(err))
     },
     updateUser(req,res) {
         Users.findOneAndUpdate({username: req.params.username}, {name: req.body.username}, {new: true}, (err,result) => {
