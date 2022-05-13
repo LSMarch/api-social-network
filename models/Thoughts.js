@@ -1,10 +1,13 @@
 const {Schema, model} = require('mongoose');
-const reactionSchema = require('./Reactions');
+const Reactions = require('./Reactions');
 //const { stringify } = require('querystring')
 
 const thoughtSchema = new Schema (
     {
-        username: String,
+        username: {
+            type: String,
+            required: true,             
+        },
         thoughtText: {
             type: String,
             required: true,
@@ -14,12 +17,14 @@ const thoughtSchema = new Schema (
         createdAt: {
             type: Date,
             default: Date.now
+        },        
+        reactions: [Reactions]                        
+    },
+    {
+        toJSON: {
+            virtuals: true,
         },
-        //timestamps: true,
-        //username: String,
-        // double check this 
-        reactions: [reactionSchema]
-            
+        id: false,    
     }
 )
 

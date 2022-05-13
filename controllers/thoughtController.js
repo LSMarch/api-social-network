@@ -1,4 +1,5 @@
-const {Thoughts} = require('../models');
+const {Thoughts, Users} = require('../models');
+const  {ObjectId }=  require('mongoose').Types
 
 module.exports = {
     getThoughts(req,res) {
@@ -10,18 +11,35 @@ module.exports = {
         Thoughts.findOne({_id:req.params._id})
             .then((thought) =>
                 !thought
-                    ? res.status(500).json({message: 'Could not think of thought'})
+                    ? res.status(500).json({message: 'no thought with id'})
                     : res.json(thought)
             )
             .catch((err) => res.status(500).json(err))
     },
     createThought(req,res) {
         Thoughts.create(req.body)
-            .then((dbThoughtData) => res.status(200).json(dbThoughtData))
-            .catch((err) => console(err))
+            .then((thought) => {
+                return Users.findOneAndUpdate(
+                    {username: req.body.username},
+                    {$addToSet: {thoughts: thought._id}},
+                    {new:true}
+                )
+            })
+            .then((user) => 
+                !user
+                    ? res.status(400).json({message: `created but no user with id`})
+                    : res.json('created thing')
+            )
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json(err)
+            });            
     },
     updateThought(req,res) {
-        Thoughts.findOneAndUpdate({_id:req.params._id}, {thoughtText: req.body.thoughtText}, {new: true}, (err,result) => {
+        return Thoughts.findOneAndUpdate(
+            {_id:req.params._id}, 
+            {$set: req.body}, 
+            {runValidators: true, new: true}, (err,result) => {
             if(result) {
                 res.status(200).json(result)
             } else {
@@ -38,5 +56,22 @@ module.exports = {
                 res.status(500).json(err)
             }
         })
-    }
+    },
+    addReaction(req,res) {
+        console.log(req.body);
+        Thoughts.findByIdAndUpdate(
+            {_id: ObjectId(req.params.thoughtId)},
+            {$addToSet: {reactions: req.body}},
+            {runValidators:true, new: true},
+            //console.log(thought)
+        )
+        .then((thought) => 
+            //console.log(thought),
+            !thought
+                ? res.status(400).json({message: 'no thought with that id'})
+                : res.json('sick')    
+        )
+        .catch((err) => res.status(500).json(err))
+        //console.log(thought)
+    },
 }
