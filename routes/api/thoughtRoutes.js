@@ -16,7 +16,7 @@ router.route('/').get(getThoughts).post(createThought);
 
 router.route('/:_id').get(getOneThought).put(updateThought).delete(deleteThought);
 
-router.route('/:thoughtID/reactions').post(addReaction)
+router.route('/:thoughtId/reactions').post(addReaction)
 
 
 

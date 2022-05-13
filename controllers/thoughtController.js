@@ -1,5 +1,5 @@
 const {Thoughts, Users} = require('../models');
-const  {ObjectId }=  require('mongoose').Types
+const  {ObjectId}=  require('mongoose').Types
 
 module.exports = {
     getThoughts(req,res) {
@@ -57,21 +57,19 @@ module.exports = {
             }
         })
     },
-    addReaction(req,res) {
-        console.log(req.body);
-        Thoughts.findByIdAndUpdate(
+    addReaction(req,res) {        
+        Thoughts.findOneAndUpdate(
             {_id: ObjectId(req.params.thoughtId)},
             {$addToSet: {reactions: req.body}},
-            {runValidators:true, new: true},
-            //console.log(thought)
+            {runValidators:true, new: true},            
         )
-        .then((thought) => 
-            //console.log(thought),
+        .then((thought) =>
+            
             !thought
                 ? res.status(400).json({message: 'no thought with that id'})
                 : res.json('sick')    
         )
         .catch((err) => res.status(500).json(err))
-        //console.log(thought)
+        
     },
 }
