@@ -50,9 +50,9 @@ userSchema.
 
 const Users = model('users', userSchema);
 
-db.users.aggregate([
-    
-])
+// db.users.aggregate([
+
+// ])
 
 module.exports = Users;
 
