@@ -2,7 +2,18 @@ const { Users } = require('../models');
 
 module.exports = {
     getUsers(req, res) {
-        Users.find()
+        Users.aggregate([
+            // trimmed white space
+            {
+                $project:
+                {
+                    username:
+                    {
+                        $trim: { input: "$username" }
+                    }
+                }
+            }
+        ])
             .then((users) => res.status(200).json(users))
             .catch((err) => res.status(500).json(err));
     },
@@ -13,12 +24,12 @@ module.exports = {
                     ? res.status(400).json({message: 'Could not find user'})
                     : res.json(user)
             )
-            .catch((err)=> res.status(500).json('Server down'))
+            .catch((err)=> res.status(500).json(err))
     },
     createUser(req,res) {
         Users.create(req.body)
             .then((dbUserData) => res.json(dbUserData))
-            .catch((err) => res.status(500).json('Server down'))
+            .catch((err) => res.status(500).json(err))
     },
     updateUser(req,res) {
         Users.findOneAndUpdate({username: req.params.username}, {name: req.body.username}, {new: true}, (err,result) => {
