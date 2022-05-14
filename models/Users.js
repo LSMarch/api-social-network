@@ -47,12 +47,7 @@ userSchema.
         return this.friends.length;
         });
 
-
 const Users = model('users', userSchema);
-
-// db.users.aggregate([
-
-// ])
 
 module.exports = Users;
 

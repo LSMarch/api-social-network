@@ -2,11 +2,13 @@ const {Thoughts, Users} = require('../models');
 const  {ObjectId}=  require('mongoose').Types
 
 module.exports = {
+    // Get all thoughts
     getThoughts(req,res) {
         Thoughts.find()
             .then((thought) => res.status(200).json(thought))
             .catch((err) => res.status(500).json(err))
     },
+    // Get one thought
     getOneThought(req,res) {
         Thoughts.findOne({_id:req.params._id})
             .then((thought) =>
@@ -16,6 +18,7 @@ module.exports = {
             )
             .catch((err) => res.status(500).json(err))
     },
+    // Create a thought
     createThought(req,res) {
         Thoughts.create(req.body)
             .then((thought) => {
@@ -35,6 +38,7 @@ module.exports = {
                 res.status(500).json(err)
             });            
     },
+    // Update a thought
     updateThought(req,res) {
         return Thoughts.findOneAndUpdate(
             {_id:req.params._id}, 
@@ -48,6 +52,7 @@ module.exports = {
             }
         })
     },
+    // Delete a thought
     deleteThought(req,res) {
         Thoughts.findOneAndDelete({_id:req.params._id}, (err,results) => {
             if(results) {
@@ -57,6 +62,7 @@ module.exports = {
             }
         })
     },
+    // Add a reaction to a thought
     addReaction(req,res) {        
         Thoughts.findOneAndUpdate(
             {_id: ObjectId(req.params.thoughtId)},
@@ -72,6 +78,7 @@ module.exports = {
         .catch((err) => res.status(500).json(err))
         
     },
+    // Delete a reaction to a thought
     deleteReaction(req,res) {
         //console.log(reactionId)
         Thoughts.findOneAndUpdate(
@@ -88,8 +95,3 @@ module.exports = {
         .catch((err)=> res.status(500).json(err))    
     }
 }
-
-//627ec9985f44c7c8b5311ad0 thoughtId
-
-//627edeb5c473e157a9e864f0 reactionId
-//627edeb5c473e157a9e864ef _id
