@@ -28,10 +28,10 @@ module.exports = {
                     {new:true}
                 )
             })
-            .then((user) => 
-                !user
+            .then((thought) => 
+                !thought
                     ? res.status(400).json({message: `created but no user with id`})
-                    : res.json('created thing')
+                    : res.json(thought)
             )
             .catch((err) => {
                 console.log(err);

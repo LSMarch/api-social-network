@@ -1,5 +1,18 @@
-const { Users } = require('../models');
-const  {ObjectId}=  require('mongoose').Types
+const  {Users}  = require('../models');
+const  {ObjectId} =  require('mongoose').Types
+
+// const friendSort = async(userId) =>
+//     Users.aggregate([
+//         {
+//             $match: {_id: ObjectId(userId)}
+//         },
+//         {
+//             $unwind: '$friends'
+//         },
+//         {
+//             $
+//         }
+//     ])
 
 module.exports = {
     getUsers(req, res) {
@@ -22,7 +35,10 @@ module.exports = {
             .catch((err) => res.status(400).json(err))
     },
     updateUser(req,res) {
-        Users.findOneAndUpdate({userId: req.params.userId}, {name: req.body.userId}, {new: true}, (err,result) => {
+        Users.findOneAndUpdate(
+            {_id: req.params.userId}, 
+            {$set: req.body}, 
+            {new: true}, (err,result) => {
             if(result) {
                 res.status(200).json(result)
             } else {
@@ -32,7 +48,7 @@ module.exports = {
         })
     },
     deleteUser(req,res) {
-        Users.findOneAndDelete({userId:req.params.userId}, (err, results) => {
+        Users.findOneAndDelete({_id:req.params.userId}, (err, results) => {
             if(results) {
                 res.status(200).json('User has been deleted forever');                
             } else {
@@ -53,8 +69,25 @@ module.exports = {
                 : res.json(user)
         )
         .catch((err) => res.status(500).json(err))
+    },
+    deleteFriend(req,res) {
+        //console.log(reactionId)
+        Users.findOneAndUpdate(
+            //console.log(thought),
+            {_id: req.params.userId},
+            {$pull: {friends: {friendId: req.params.friendId}}},
+            {runValidators: true, new: true}
+        )
+        .then((user) =>
+            !user
+                ? res.status(404).json({message: 'No user with id'})
+                : res.json(user)
+        )
+        .catch((err)=> res.status(500).json(err))    
     }
 }
 
-//userId: 627de1904fd18460ca39050c
-// friendId: 627de1ab4fd18460ca39050euser._id
+//userId: 627de1ab4fd18460ca39050e
+// friendId: 627fe261f81c3d31eee5156e
+
+// /api/users/627de1ab4fd18460ca39050e/friends/627fe261f81c3d31eee5156e
